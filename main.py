@@ -13,7 +13,21 @@ CHANNEL_ID2 = 1408190362924748890
 WEBHOOK_URL_1M = "https://discord.com/api/webhooks/1412224756836733008/3cBJdYh3FOz4PRHqbustGwovbCn7mWjeNkX2CtWMfOnI9PNdOYWNkLnVhtBVX1et5rwb"
 WEBHOOK_URL_10M = "https://discord.com/api/webhooks/1412460089641799700/YQuQXgaKQpTv-M2gpt38NebCxcdkwoYGD77siQvoEiWtxS-rxfei5_mJwsCgTx9z04av"
 GATEWAY_URL = "wss://gateway.discord.gg/?v=10&encoding=json"
+API_URL = "https://job-id-whisperer.vercel.app/api/jobid"
 
+def post_job_id(job_id_pc, job_id_mobile):
+    payload = {"job_id_pc": job_id_pc,
+               "job_id_mobile": job_id_mobile}
+    headers = {"Content-Type": "application/json"}
+    
+    try:
+        response = requests.post(API_URL, data=json.dumps(payload), headers=headers)
+        response.raise_for_status()
+        if response.status_code == 200:
+            print(Fore.GREEN + "POST Request sent successfully" + Fore.RESET)
+        
+    except requests.exceptions.RequestException as e:
+        print(f"An error occurred: {e}")    
 
 def parse_game_notifier(text):
     data = {}
@@ -75,6 +89,7 @@ def send_to_webhook_10m(parsed_data: dict):
             print(Fore.BLUE + "[10M+ Brainrot Detected]" + Fore.GREEN + "[Forwarded Successfully]" + Fore.RESET)
         else:
             print(f"Failed to send message to webhook: {response.status_code} - {response.text}")
+        post_job_id(parsed_data.get('job_id_pc', 'N/A'), parsed_data.get('job_id_mobile', 'N/A'))
     except requests.exceptions.RequestException as e:
         print(f"An error occurred while sending the message: {e}")
         
@@ -203,6 +218,7 @@ async def listen():
                             send_to_webhook_10m(entry)
 
     asyncio.run(listen())
+
 
 
 
