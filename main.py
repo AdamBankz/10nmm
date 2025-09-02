@@ -178,15 +178,15 @@ async def listen():
                             if block.strip():
                                 info = parse_game_notifier(block)
                                 if info:
-                                     parsed_data.append(info)
+                                    parsed_data.append(info)
 
-                            if parsed_data:
-                                for i, entry in enumerate(parsed_data, 1):
-                                    pass  # Removed printing logic
+                        if parsed_data:
+                            for i, entry in enumerate(parsed_data, 1):
+                                pass  # Removed printing logic
 
-                    send_to_webhook_1m(entry)
-                   
-                    if channel_id == CHANNEL_ID1:
+                            send_to_webhook_1m(entry)
+
+                    elif channel_id == CHANNEL_ID2:
                         text_blocks = content.strip().split("Brainrot Notify | Dark Notifier")
 
                         parsed_data = []
@@ -194,15 +194,14 @@ async def listen():
                             if block.strip():
                                 info = parse_game_notifier(block)
                                 if info:
-                                     parsed_data.append(info)
+                                    parsed_data.append(info)
 
-                      if parsed_data:
-                          for i, entry in enumerate(parsed_data, 1):
-                              pass  # Removed printing logic
+                        if parsed_data:
+                            for i, entry in enumerate(parsed_data, 1):
+                                pass  # Removed printing logic
 
-                    send_to_webhook_1m(entry)
+                            send_to_webhook_10m(entry)
 
-
-asyncio.run(listen())
+    asyncio.run(listen())
 
 
