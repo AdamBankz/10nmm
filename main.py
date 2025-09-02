@@ -7,7 +7,7 @@ import colorama
 
 
 # Replace with your actual bot token and channel ID
-TOKEN = "OTMwODk5MTQxNjI4OTI4MDM1.G0XxBd.PgZP8dVeHL-sub86qBtTleZXfDItH4adrSc32M"
+TOKEN = ""
 CHANNEL_ID1 = 1408190325968736307  # Replace with your channel ID
 CHANNEL_ID2 = 1408190362924748890
 WEBHOOK_URL_1M = "https://discord.com/api/webhooks/1412224756836733008/3cBJdYh3FOz4PRHqbustGwovbCn7mWjeNkX2CtWMfOnI9PNdOYWNkLnVhtBVX1et5rwb"
@@ -218,6 +218,7 @@ async def listen():
                             send_to_webhook_10m(entry)
 
     asyncio.run(listen())
+
 
 
 
