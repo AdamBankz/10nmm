@@ -3,7 +3,7 @@ import json
 import websockets
 import requests
 import re
-
+import colorama
 
 
 # Replace with your actual bot token and channel ID
@@ -72,7 +72,7 @@ def send_to_webhook_10m(parsed_data: dict):
     try:
         response = requests.post(WEBHOOK_URL_10M, json=data)
         if response.status_code == 204:
-            print("Message sent to webhook successfully!")
+            print(Fore.BLUE + "[10M+ Brainrot Detected]" + Fore.GREEN + "[Forwarded Successfully]" + Fore.RESET)
         else:
             print(f"Failed to send message to webhook: {response.status_code} - {response.text}")
     except requests.exceptions.RequestException as e:
@@ -109,7 +109,7 @@ def send_to_webhook_1m(parsed_data: dict):
     try:
         response = requests.post(WEBHOOK_URL_1M, json=data)
         if response.status_code == 204:
-            print("Message sent to webhook successfully!")
+            print(Fore.BLUE + "[1M+ Brainrot Detected]" + Fore.GREEN + "[Forwarded Successfully]" + Fore.RESET)
         else:
             print(f"Failed to send message to webhook: {response.status_code} - {response.text}")
     except requests.exceptions.RequestException as e:
@@ -203,5 +203,6 @@ async def listen():
                             send_to_webhook_10m(entry)
 
     asyncio.run(listen())
+
 
 
