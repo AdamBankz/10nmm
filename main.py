@@ -197,11 +197,12 @@ async def listen():
                                      parsed_data.append(info)
 
                       if parsed_data:
-                         for i, entry in enumerate(parsed_data, 1):
-                            pass  # Removed printing logic
+                          for i, entry in enumerate(parsed_data, 1):
+                              pass  # Removed printing logic
 
                     send_to_webhook_1m(entry)
 
 
 asyncio.run(listen())
+
 
