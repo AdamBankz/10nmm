@@ -172,41 +172,36 @@ async def listen():
 
                     if channel_id == CHANNEL_ID1:
                         text_blocks = content.strip().split("Brainrot Notify | Dark Notifier")
-    
+
                         parsed_data = []
                         for block in text_blocks:
                             if block.strip():
                                 info = parse_game_notifier(block)
                                 if info:
-                                    parsed_data.append(info)
-    
-                        if parsed_data:
-                            for i, entry in enumerate(parsed_data, 1):
-                                print(f"--- Extracted Data for Block {i} ---")
-                                for key, value in entry.items():
-                                    print(f"{key.replace('_', ' ').capitalize()}: {value}")
-                                    print("-" * 30)
+                                     parsed_data.append(info)
 
-                        send_to_webhook_1m(entry)
+                            if parsed_data:
+                                for i, entry in enumerate(parsed_data, 1):
+                                    pass  # Removed printing logic
 
-                        
-                    elif channel_id == CHANNEL_ID2:
+                    send_to_webhook_1m(entry)
+                   
+                    if channel_id == CHANNEL_ID1:
                         text_blocks = content.strip().split("Brainrot Notify | Dark Notifier")
-    
+
                         parsed_data = []
                         for block in text_blocks:
                             if block.strip():
                                 info = parse_game_notifier(block)
                                 if info:
-                                    parsed_data.append(info)
-    
-                        if parsed_data:
-                            for i, entry in enumerate(parsed_data, 1):
-                                print(f"--- Extracted Data for Block {i} ---")
-                                for key, value in entry.items():
-                                    print(f"{key.replace('_', ' ').capitalize()}: {value}")
-                                    print("-" * 30)
+                                     parsed_data.append(info)
 
-                        send_to_webhook_10m(entry)
+                      if parsed_data:
+                         for i, entry in enumerate(parsed_data, 1):
+                            pass  # Removed printing logic
+
+                    send_to_webhook_1m(entry)
+
 
 asyncio.run(listen())
+
