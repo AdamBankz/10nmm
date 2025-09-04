@@ -3,7 +3,7 @@ import json
 import websockets
 import requests
 import re
-import colorama
+from colorama import Fore
 
 
 # Replace with your actual bot token and channel ID
@@ -217,7 +217,8 @@ async def listen():
 
                             send_to_webhook_10m(entry)
 
-    asyncio.run(listen())
+asyncio.run(listen())
+
 
 
 
