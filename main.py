@@ -132,92 +132,100 @@ def send_to_webhook_1m(parsed_data: dict):
 
 
 async def listen():
-    async with websockets.connect(GATEWAY_URL) as ws:
-        hello = await ws.recv()
-        hello_data = json.loads(hello)
-        heartbeat_interval = hello_data['d']['heartbeat_interval']
+    while True:
+        try:
+            async with websockets.connect(GATEWAY_URL) as ws:
+                hello = await ws.recv()
+                hello_data = json.loads(hello)
+                heartbeat_interval = hello_data['d']['heartbeat_interval']
 
-        asyncio.create_task(heartbeat(ws, heartbeat_interval))
+                asyncio.create_task(heartbeat(ws, heartbeat_interval))
 
-        identify_payload = {
-            "op": 2,
-            "d": {
-                "token": TOKEN,
-                "properties": {
-                    "$os": "windows",
-                    "$browser": "my_library",
-                    "$device": "my_library"
-                },
-                "intents": 33280,
-                "presence": {
-                    "status": "online"
+                identify_payload = {
+                    "op": 2,
+                    "d": {
+                        "token": TOKEN,
+                        "properties": {
+                            "$os": "windows",
+                            "$browser": "my_library",
+                            "$device": "my_library"
+                        },
+                        "intents": 33280,
+                        "presence": {
+                            "status": "online"
+                        }
+                    }
                 }
-            }
-        }
-        await ws.send(json.dumps(identify_payload))
+                await ws.send(json.dumps(identify_payload))
 
-        while True:
-            msg = await ws.recv()
-            data = json.loads(msg)
+                while True:
+                    msg = await ws.recv()
+                    data = json.loads(msg)
 
-            if data['op'] == 0:
-                event = data['t']
-                event_data = data['d']
+                    if data['op'] == 0:
+                        event = data['t']
+                        event_data = data['d']
 
-                if event == "MESSAGE_CREATE":
-                    channel_id = int(event_data['channel_id'])
-                    author = event_data['author']['username']
-                    content = event_data.get('content', '')
+                        if event == "MESSAGE_CREATE":
+                            channel_id = int(event_data['channel_id'])
+                            author = event_data['author']['username']
+                            content = event_data.get('content', '')
 
-                    # Handle embedded messages if content is empty
-                    if not content and event_data.get('embeds'):
-                        embeds = event_data['embeds']
-                        embed_texts = []
-                        for embed in embeds:
-                            title = embed.get('title', '')
-                            description = embed.get('description', '')
-                            embed_texts.append(title)
-                            embed_texts.append(description)
-                            if 'fields' in embed:
-                                for field in embed['fields']:
-                                    embed_texts.append(field.get('name', ''))
-                                    embed_texts.append(field.get('value', ''))
-                        # Join all non-empty parts with newlines
-                        content = '\n'.join(filter(None, embed_texts))
+                            if not content and event_data.get('embeds'):
+                                embeds = event_data['embeds']
+                                embed_texts = []
+                                for embed in embeds:
+                                    title = embed.get('title', '')
+                                    description = embed.get('description', '')
+                                    embed_texts.append(title)
+                                    embed_texts.append(description)
+                                    if 'fields' in embed:
+                                        for field in embed['fields']:
+                                            embed_texts.append(field.get('name', ''))
+                                            embed_texts.append(field.get('value', ''))
+                                content = '\n'.join(filter(None, embed_texts))
 
-                    if channel_id == CHANNEL_ID1:
-                        text_blocks = content.strip().split("Brainrot Notify | Dark Notifier")
+                            if channel_id == CHANNEL_ID1:
+                                text_blocks = content.strip().split("Brainrot Notify | Dark Notifier")
 
-                        parsed_data = []
-                        for block in text_blocks:
-                            if block.strip():
-                                info = parse_game_notifier(block)
-                                if info:
-                                    parsed_data.append(info)
+                                parsed_data = []
+                                for block in text_blocks:
+                                    if block.strip():
+                                        info = parse_game_notifier(block)
+                                        if info:
+                                            parsed_data.append(info)
 
-                        if parsed_data:
-                            for i, entry in enumerate(parsed_data, 1):
-                                pass  # Removed printing logic
+                                if parsed_data:
+                                    for i, entry in enumerate(parsed_data, 1):
+                                        pass
 
-                            send_to_webhook_1m(entry)
+                                    send_to_webhook_1m(entry)
 
-                    elif channel_id == CHANNEL_ID2:
-                        text_blocks = content.strip().split("Brainrot Notify | Dark Notifier")
+                            elif channel_id == CHANNEL_ID2:
+                                text_blocks = content.strip().split("Brainrot Notify | Dark Notifier")
 
-                        parsed_data = []
-                        for block in text_blocks:
-                            if block.strip():
-                                info = parse_game_notifier(block)
-                                if info:
-                                    parsed_data.append(info)
+                                parsed_data = []
+                                for block in text_blocks:
+                                    if block.strip():
+                                        info = parse_game_notifier(block)
+                                        if info:
+                                            parsed_data.append(info)
 
-                        if parsed_data:
-                            for i, entry in enumerate(parsed_data, 1):
-                                pass  # Removed printing logic
+                                if parsed_data:
+                                    for i, entry in enumerate(parsed_data, 1):
+                                        pass
 
-                            send_to_webhook_10m(entry)
+                                    send_to_webhook_10m(entry)
+
+        except websockets.exceptions.ConnectionClosedError:
+            print("WebSocket connection closed. Attempting to reconnect...")
+            await asyncio.sleep(5)
+        except Exception as e:
+            print(f"An unexpected error occurred: {e}. Attempting to reconnect...")
+            await asyncio.sleep(5)
 
 asyncio.run(listen())
+
 
 
 
